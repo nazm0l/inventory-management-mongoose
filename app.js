@@ -70,8 +70,24 @@ const ProductSchema = mongoose.Schema(
   }
 );
 
+//Model
+
+const Product = mongoose.model("Product", ProductSchema);
+
 app.get("/", (req, res) => {
   res.send("Route is working! YaY!");
+});
+
+app.post("/api/v1/product", async (req, res, next) => {
+  try {
+    const product = new Product(req.body);
+
+    const data = await product.save();
+
+    res.status(200).json({ success: true, data: data });
+  } catch (error) {
+    res.status(400).json({ status: false, error: error.message });
+  }
 });
 
 module.exports = app;
