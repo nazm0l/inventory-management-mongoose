@@ -100,9 +100,20 @@ app.post("/api/v1/product", async (req, res, next) => {
   }
 });
 
+//Get all Product
 app.get("/api/v1/product", async (req, res, next) => {
   try {
     const products = await Product.find({});
+    res.status(200).json({ success: true, data: products });
+  } catch (error) {
+    res.status(400).json({ status: false, error: error.message });
+  }
+});
+
+//Get Single Product
+app.get("/api/v1/product/:id", async (req, res, next) => {
+  try {
+    const products = await Product.findById(req.params.id);
     res.status(200).json({ success: true, data: products });
   } catch (error) {
     res.status(400).json({ status: false, error: error.message });
