@@ -70,6 +70,16 @@ const ProductSchema = mongoose.Schema(
   }
 );
 
+//Middleware
+
+ProductSchema.pre("save", function (next) {
+  if (this.quantity == 0) {
+    this.status = "out-of-stock";
+  }
+
+  next();
+});
+
 //Model
 
 const Product = mongoose.model("Product", ProductSchema);
@@ -85,6 +95,15 @@ app.post("/api/v1/product", async (req, res, next) => {
     const data = await product.save();
 
     res.status(200).json({ success: true, data: data });
+  } catch (error) {
+    res.status(400).json({ status: false, error: error.message });
+  }
+});
+
+app.get("/api/v1/product", async (req, res, next) => {
+  try {
+    const products = await Product.find({});
+    res.status(200).json({ success: true, data: products });
   } catch (error) {
     res.status(400).json({ status: false, error: error.message });
   }
